@@ -60,10 +60,10 @@ class KnowledgeEmbeddings(nn.Module):
         self.config = config
 
         # response ids:
-        #     0 : padding id
-        #     1 : start embedding
-        #     2 : incorrect answer
-        #     3 : correct answer
+        #   0: padding id
+        #   1: start embedding
+        #   2: incorrect answer
+        #   3: correct answer
         self.response_embeddings = nn.Embedding(4, config.response_embedding_size, padding_idx=0)
         self.numerical_embeddings = nn.Sequential(TransposeBatchNorm1d(2), nn.Linear(2, config.embedding_size))
 
