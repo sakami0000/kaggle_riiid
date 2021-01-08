@@ -9,8 +9,8 @@ def virtual_time_split(train_df: pd.DataFrame,
                        epoch_valid_size: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """validation split based on virtual timestamp.
     
-    Reference
-    ---------
+    References
+    ----------
     - https://www.kaggle.com/its7171/cv-strategy
     """
     max_timestamp_user = train_df.groupby('user_id')['timestamp'].max()

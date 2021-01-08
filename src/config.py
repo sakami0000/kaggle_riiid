@@ -16,8 +16,9 @@ class Config(dict):
 
     def __deepcopy__(self, memo=None):
         """Prevent errors in the `copy.deepcopy` method.
-        Reference
-        ---------
+
+        References
+        ----------
         - https://stackoverflow.com/questions/49901590/python-using-copy-deepcopy-on-dotdict
         """
         return Config(copy.deepcopy(dict(self), memo=memo))
