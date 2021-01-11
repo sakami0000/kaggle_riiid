@@ -9,28 +9,6 @@ from tqdm import tqdm
 from .config import Config
 
 
-def get_loader(config: Config,
-               train_df: pd.DataFrame,
-               train_idx: np.ndarray,
-               valid_idx: np.ndarray,
-               epoch_valid_idx: np.ndarray) -> Tuple[DataLoader, DataLoader, DataLoader]:
-    train_user_seqs = _get_user_sequences(train_df.iloc[train_idx])
-    valid_user_seqs = _get_user_sequences(train_df.iloc[valid_idx])
-    
-    train_dataset = TrainDataset(train_user_seqs, window_size=config.window_size, stride_size=config.stride_size)
-    valid_dataset = ValidDataset(train_df, train_user_seqs, valid_user_seqs, valid_idx, window_size=config.window_size)
-    
-    train_loader = DataLoader(train_dataset, **config.train_loader_params)
-    valid_loader = DataLoader(valid_dataset, **config.valid_loader_params)
-
-    # valid loader for epoch validation
-    epoch_valid_user_seqs = _get_user_sequences(train_df.iloc[epoch_valid_idx])
-    epoch_valid_dataset = ValidDataset(train_df, train_user_seqs, epoch_valid_user_seqs, epoch_valid_idx, window_size=config.window_size)
-    epoch_valid_loader = DataLoader(epoch_valid_dataset, **config.valid_loader_params)
-
-    return train_loader, valid_loader, epoch_valid_loader
-
-
 class Example(NamedTuple):
     input_ids: torch.LongTensor
     attention_mask: torch.LongTensor
@@ -63,7 +41,7 @@ class Example(NamedTuple):
         )
 
 
-def _get_user_sequences(df: pd.DataFrame) -> Dict[int, Dict[str, List[int]]]:
+def get_user_sequences(df: pd.DataFrame) -> Dict[int, Dict[str, List[int]]]:
     df_sorted = df.sort_values(['timestamp', 'row_id'])
     df_sorted['elapsed_time'] = df['prior_question_elapsed_time'].fillna(0) / 1000  # seconds
 

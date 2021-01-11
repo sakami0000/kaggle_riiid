@@ -8,11 +8,12 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 import torch
 from torch import nn, optim
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import BertConfig
 
 from src.config import Config
-from src.data import get_loader
+from src.data import get_user_sequences, TrainDataset, ValidDataset
 from src.evaluate import predict
 from src.models import AktEncoderDecoderModel, SaintEncoderDecoderModel
 from src.optim import NoamLR
@@ -76,7 +77,19 @@ def main():
     print(f'valid size: {len(valid_idx)}')
 
     with timer('prepare data loader'):
-        train_loader, valid_loader, epoch_valid_loader = get_loader(config, train_df, train_idx, valid_idx, epoch_valid_idx)
+        train_user_seqs = get_user_sequences(train_df.iloc[train_idx])
+        valid_user_seqs = get_user_sequences(train_df.iloc[valid_idx])
+        
+        train_dataset = TrainDataset(train_user_seqs, window_size=config.window_size, stride_size=config.stride_size)
+        valid_dataset = ValidDataset(train_df, train_user_seqs, valid_user_seqs, valid_idx, window_size=config.window_size)
+        
+        train_loader = DataLoader(train_dataset, **config.train_loader_params)
+        valid_loader = DataLoader(valid_dataset, **config.valid_loader_params)
+
+        # valid loader for epoch validation
+        epoch_valid_user_seqs = get_user_sequences(train_df.iloc[epoch_valid_idx])
+        epoch_valid_dataset = ValidDataset(train_df, train_user_seqs, epoch_valid_user_seqs, epoch_valid_idx, window_size=config.window_size)
+        epoch_valid_loader = DataLoader(epoch_valid_dataset, **config.valid_loader_params)
 
     with timer('train'):
         if config.model == 'akt':
