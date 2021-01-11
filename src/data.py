@@ -36,7 +36,7 @@ class Example(NamedTuple):
     attention_mask: torch.LongTensor
     timestamp: torch.LongTensor
     category_ids: torch.LongTensor
-    elapsed_time: torch.Tensor
+    elapsed_time: torch.FloatTensor
     response_ids: torch.LongTensor
     decoder_attention_mask: torch.LongTensor
 
@@ -139,7 +139,7 @@ class TrainDataset(Dataset):
                 attention_mask = (input_ids > 0).float()
                 timestamp = torch.LongTensor(timestamp)
                 category_ids = torch.LongTensor(part)
-                elapsed_time = torch.tensor(elapsed_time)
+                elapsed_time = torch.FloatTensor(elapsed_time)
                 response_ids = torch.LongTensor(target_for_input)
                 decoder_attention_mask = (response_ids > 0).float()
                 
@@ -258,7 +258,7 @@ class ValidDataset(Dataset):
         attention_mask = (input_ids > 0).float()
         timestamp = torch.LongTensor(timestamp)
         category_ids = torch.LongTensor(part)
-        elapsed_time = torch.tensor(elapsed_time)
+        elapsed_time = torch.FloatTensor(elapsed_time)
         response_ids = torch.LongTensor(target)
         decoder_attention_mask = (response_ids > 0).float()
         
