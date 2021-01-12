@@ -683,8 +683,8 @@ class AktEncoderDecoderModel(nn.Module):
 
         # content_encoder_output
         # | start id | response id | response id | ... | response id |
-        # |------------------ query -------------------|
-        #            |--------------------- key ---------------------|
+        #            |-------------------- query --------------------|
+        # |-------------------- key -------------------|
         content_encoder_output = self.content_encoder(
             input_ids=input_ids,
             attention_mask=attention_mask,
