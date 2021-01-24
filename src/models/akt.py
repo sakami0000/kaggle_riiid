@@ -156,7 +156,7 @@ class AktSelfAttention(BertSelfAttention):
         ----------
         attention_scores : torch.FloatTensor with shape (batch_size, num_heads, sequence_length, sequence_length)
         timestamp : torch.LongTensor, optional with shape (batch_size, sequence_length)
-        is_crossattention: bool
+        is_crossattention : bool
         """
         if timestamp is not None:
             if is_crossattention:
